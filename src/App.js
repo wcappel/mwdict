@@ -45,16 +45,48 @@ class App extends Component {
 
   render() {
 
-    console.log(this.state.defs);
+    // console.log(this.state.defs);
     let defs = <div/>;
     if (this.state.defs !== null) {
       if (this.state.defs[0].meta != null) {
-        defs = this.state.defs.map(def => {
+        defs = this.state.defs.map(ele => {
           return (
-            <div key={def.meta.id}>
-              <h3 className="defHeader">{def.meta.id.includes(":") ? def.meta.id.substring(0, def.meta.id.length - 2) : def.meta.id}</h3>
-              <h5 className="type">{def.fl}</h5>
-              
+            <div key={ele.meta.id}>
+              <h3 className="defHeader">{ele.meta.id.includes(":") ? ele.meta.id.substring(0, ele.meta.id.length - 2) : ele.meta.id}</h3>
+              <h5 className="type">{ele.fl}</h5>
+              {
+                //want to map all subelements here into text sections
+                Array.isArray(ele.def) !== true ? <div/> : (
+                  ele.def.map(def => {
+                    console.log(def.sseq);
+                    return (
+                      def.sseq.map(sense => {
+                        //this is a nightmare
+                        return (
+                          sense.map(senseArr => {
+                            console.log(senseArr)
+                            return (
+                              senseArr.map(senses => {
+                                console.log(senses)
+                                //now for actual defs
+                                return (
+                                  
+                                  <div key={senses.sn}> 
+                                    <p>{senses.sn}</p>
+                                    {senses.dt === undefined ? <div/> : (
+                                      <p>{senses.dt[0][1]}</p>
+                                    )}
+                                  </div>
+                                )
+                              })
+                            )
+                          })
+                        )
+                      })
+                    );
+                  })
+                )
+              }
   
               <p></p>
             </div>
