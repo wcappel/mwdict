@@ -10,12 +10,12 @@ class App extends Component {
     super();
     this.state = {
       word: null,
-      type: null,
-      defs: []
+      defs: null
     }
     this.inputRef = React.createRef();
     this.onSubmit = this.onSubmit.bind(this);
     this.checkForEnter = this.checkForEnter.bind(this);
+    this.fetchDefData = this.fetchDefData.bind(this);
   }
   
   onSubmit() {
@@ -34,31 +34,53 @@ class App extends Component {
     fetch(`${mwURL}${word}${apiPath}`)
     .then(res => res.json())
     .then(result => {
-      console.log(result);
       this.setState({
         word: word,
-        type: result[0].fl
+        defs: result
       })
+      console.log(this.state.defs);
     })
   }
 
 
   render() {
 
-    
-    const defs = (
-    <div>
-      <h3>{this.state.word} - {this.state.type}</h3>
-      
-    </div>
-    );
+    console.log(this.state.defs);
+    let defs = <div/>;
+    if (this.state.defs !== null) {
+      if (this.state.defs[0].meta != null) {
+        defs = this.state.defs.map(def => {
+          return (
+            <div key={def.meta.id}>
+              <h3 className="defHeader">{def.meta.id.includes(":") ? def.meta.id.substring(0, def.meta.id.length - 2) : def.meta.id}</h3>
+              <h5 className="type">{def.fl}</h5>
+              
+  
+              <p></p>
+            </div>
+          );
+        })
+      } else {
+        const suggestions = this.state.defs.map(def => {
+          return (
+            <h4 key={def}>{def}</h4>
+          );
+        })
+        defs = (
+          <div>
+            <h3>Not found, did you mean:</h3>
+            {suggestions}
+          </div>
+          );
+      }
+    }
 
     return (
       <div className="App">
         <h2> MWDict. </h2>
         <input type="text" id="sbar" ref={this.inputRef} onKeyPress={this.checkForEnter}/>
         <button type="button" onClick={this.onSubmit}>Search</button>
-        {this.state.word !== null && this.state.word !== "" ? defs : <div/>}
+        {this.state.word !== null && this.state.defs !== null ? defs : <div/>}
       </div>
     );
 
