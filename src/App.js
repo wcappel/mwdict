@@ -42,6 +42,32 @@ class App extends Component {
     })
   }
 
+  //used to parse and format raw text according to MW tokens
+  replaceToken(text, token, tag) {
+    if (typeof text === "string" || text instanceof String) {
+      //dangerouslySetInnerHTML or replaceAll w/ inner html tags
+      const re = new RegExp(token, 'g');
+      return(text.replaceAll(re, tag));
+    } else {
+      return text;
+    }
+  }
+
+  parseAllTokens(text) {
+    text = this.replaceToken(text, "{bc}", '<b>: </b>');
+    text = this.replaceToken(text, "{sup}", '<sup>');
+    text = this.replaceToken(text, "{\\/sup}", '</sup>');
+    text = this.replaceToken(text, "{inf}", '<sub>');
+    text = this.replaceToken(text, "{\\/inf}", '</sub>');
+    text = this.replaceToken(text, "{b}", '<b>');
+    text = this.replaceToken(text, "{\\/b}", '</b>');
+    text = this.replaceToken(text, "{it}", '<i>');
+    text = this.replaceToken(text, "{\\/it}", '</i>');
+    //replace sx tags
+    return text;
+  }
+
+
 
   render() {
 
@@ -58,23 +84,18 @@ class App extends Component {
                 //want to map all subelements here into text sections
                 Array.isArray(ele.def) !== true ? <div/> : (
                   ele.def.map(def => {
-                    console.log(def.sseq);
                     return (
                       def.sseq.map(sense => {
-                        //this is a nightmare
                         return (
                           sense.map(senseArr => {
-                            console.log(senseArr)
                             return (
                               senseArr.map(senses => {
                                 console.log(senses)
-                                //now for actual defs
                                 return (
-                                  
                                   <div key={senses.sn}> 
                                     <p>{senses.sn}</p>
-                                    {senses.dt === undefined ? <div/> : (
-                                      <p>{senses.dt[0][1]}</p>
+                                      {senses.dt === undefined ? <div/> : (
+                                    <p dangerouslySetInnerHTML={{__html: this.parseAllTokens(senses.dt[0][1])}}></p>
                                     )}
                                   </div>
                                 )
@@ -98,6 +119,7 @@ class App extends Component {
             <h4 key={def}>{def}</h4>
           );
         })
+        //add functionality so user can click on suggestion to query
         defs = (
           <div>
             <h3>Not found, did you mean:</h3>
@@ -110,7 +132,7 @@ class App extends Component {
     return (
       <div className="App">
         <h2> MWDict. </h2>
-        <input type="text" id="sbar" ref={this.inputRef} onKeyPress={this.checkForEnter}/>
+        <input type="text" id="sbar" ref={this.inputRef} onKeyPress={this.checkForEnter} autoComplete="off"/>
         <button type="button" onClick={this.onSubmit}>Search</button>
         {this.state.word !== null && this.state.defs !== null ? defs : <div/>}
       </div>
