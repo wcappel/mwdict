@@ -63,8 +63,18 @@ class App extends Component {
     text = this.replaceToken(text, "{\\/b}", '</b>');
     text = this.replaceToken(text, "{it}", '<i>');
     text = this.replaceToken(text, "{\\/it}", '</i>');
-    //replace sx tags
+    text = this.replaceToken(text, "{ldquo}", '“');
+    text = this.replaceToken(text, "{rdquo}", '”');
+    text = this.replaceToken(text, "{sc}", '<p className="smallCaps">');
+    text = this.replaceToken(text, "{\\/sc}", '</p>');
+    
+    //eventually replace link tags w/ API call funct. in HTML element
+    text = this.replaceToken(text, "{[^|]*\\|+", '')
+    text = this.replaceToken(text, "\\|*}", '')
+    text = this.replaceToken(text, "\\|.*\\|", '')
+    text = this.replaceToken(text, "{\/..", '')
     return text;
+
   }
 
 
@@ -85,28 +95,18 @@ class App extends Component {
                 Array.isArray(ele.def) !== true ? <div/> : (
                   ele.def.map(def => {
                     return (
-                      def.sseq.map(sense => {
-                        return (
-                          sense.map(senseArr => {
-                            return (
-                              senseArr.map(senses => {
-                                console.log(senses)
-                                return (
-                                  <div key={senses.sn}> 
-                                    <p>{senses.sn}</p>
-                                      {senses.dt === undefined ? <div/> : (
-                                    <p dangerouslySetInnerHTML={{__html: this.parseAllTokens(senses.dt[0][1])}}></p>
-                                    )}
-                                  </div>
-                                )
-                              })
-                            )
-                          })
-                        )
-                      })
-                    );
-                  })
-                )
+                    def.sseq.map(sense => {
+                    return (
+                    sense.map(senseArr => {
+                    return (
+                    senseArr.map(senses => {
+                    console.log(senses)
+                    return (
+                      <div key={senses.sn}> 
+                        <p>{senses.sn}</p>
+                            {senses.dt === undefined ? <div/> : (
+                        <p dangerouslySetInnerHTML={{__html: this.parseAllTokens(senses.dt[0][1])}}></p>)}
+                      </div>)}))}))}))}))
               }
   
               <p></p>
