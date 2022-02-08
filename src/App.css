@@ -1,3 +1,22 @@
 .App {
   text-align: center;
+  background-color: #272727;
+  color:#d0d0d0;
+  font-family: Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+  font-size: 18px;
+}
+
+.def {
+  text-align: left;
+  margin-left: 300px;
+  margin-right:250px
+}
+
+.item {
+  display: flex;
+  margin: 10px;
+}
+
+.item p {
+  margin:5px
 }

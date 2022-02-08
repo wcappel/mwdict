@@ -69,6 +69,7 @@ class App extends Component {
     text = this.replaceToken(text, "{\\/sc}", '</p>');
     
     //eventually replace link tags w/ API call funct. in HTML element
+    //better regices
     text = this.replaceToken(text, "{[^|]*\\|+", '')
     text = this.replaceToken(text, "\\|*}", '')
     text = this.replaceToken(text, "\\|.*\\|", '')
@@ -81,13 +82,13 @@ class App extends Component {
 
   render() {
 
-    // console.log(this.state.defs);
+    console.log(this.state.defs);
     let defs = <div/>;
     if (this.state.defs !== null) {
       if (this.state.defs[0].meta != null) {
         defs = this.state.defs.map(ele => {
           return (
-            <div key={ele.meta.id}>
+            <div key={ele.meta.id} className="def">
               <h3 className="defHeader">{ele.meta.id.includes(":") ? ele.meta.id.substring(0, ele.meta.id.length - 2) : ele.meta.id}</h3>
               <h5 className="type">{ele.fl}</h5>
               {
@@ -101,12 +102,13 @@ class App extends Component {
                     return (
                     senseArr.map(senses => {
                     console.log(senses)
-                    return (
-                      <div key={senses.sn}> 
-                        <p>{senses.sn}</p>
-                            {senses.dt === undefined ? <div/> : (
-                        <p dangerouslySetInnerHTML={{__html: this.parseAllTokens(senses.dt[0][1])}}></p>)}
-                      </div>)}))}))}))}))
+                    if (senses.dt !== undefined) {
+                      return (
+                        <div key={senses.sn} className="item"> 
+                          <p>{senses.sn}</p>
+                          <p dangerouslySetInnerHTML={{__html: this.parseAllTokens(senses.dt[0][1])}}></p>
+                        </div>)
+                    }}))}))}))}))
               }
   
               <p></p>
