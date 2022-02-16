@@ -118,10 +118,9 @@ class App extends Component {
       } else {
         const suggestions = this.state.defs.map(def => {
           return (
-            <h4 key={def}>{def}</h4>
+            <h4 key={def} className="suggestion" onClick={() => this.fetchDefData(def)}><u>{def}</u></h4>
           );
         })
-        //add functionality so user can click on suggestion to query
         defs = (
           <div>
             <h3>Not found, did you mean:</h3>
